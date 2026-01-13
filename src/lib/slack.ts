@@ -105,3 +105,107 @@ export async function sendSlackRequestNotification(request: any) {
         console.error("Failed to send Slack notification:", error);
     }
 }
+export async function sendSlackStatusUpdate(request: any, previousStatus?: string) {
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!webhookUrl) return;
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+    const statusIcons: Record<string, string> = {
+        "รออนุมัติ": "⏳",
+        "รอหลังบ้านตรวจสอบ": "🔍",
+        "รับเรื่องแล้ว": "📥",
+        "เปิดใบเสนอราคา": "📄",
+        "เปิดบิล": "✅",
+        "ไม่อนุมัติ": "❌",
+        "ถูกปฏิเสธ": "❌"
+    };
+
+    const icon = statusIcons[request.status] || "ℹ️";
+
+    const blocks = [
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `${icon} *อัปเดตสถานะคำขอ:* <${appUrl}/backoffice/${request.id}|${request.customerName}>`
+            }
+        },
+        {
+            type: "context",
+            elements: [
+                {
+                    type: "mrkdwn",
+                    text: `*สถานะ:* ${previousStatus ? `${previousStatus} ➡️ ` : ""}${request.status}`
+                },
+                {
+                    type: "mrkdwn",
+                    text: `*เซลล์:* ${request.salesName}`
+                }
+            ]
+        }
+    ];
+
+    try {
+        await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ blocks })
+        });
+    } catch (error) {
+        console.error("Failed to send Slack status update:", error);
+    }
+}
+export async function sendSlackQuotationFileNotification(request: any) {
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+    if (!webhookUrl) return;
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const fileUrl = `${appUrl}${request.quotationFile}`;
+
+    const blocks = [
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `📄 *ใบเสนอราคาพร้อมแล้ว:* <${appUrl}/backoffice/${request.id}|${request.customerName}>`
+            }
+        },
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `เซลล์สามารถคลิกดาวน์โหลดไฟล์เพื่อส่งให้ลูกค้าได้ทันทีครับ`
+            },
+            accessory: {
+                type: "button",
+                text: {
+                    type: "plain_text",
+                    text: "📥 ดาวน์โหลด PDF",
+                    emoji: true
+                },
+                url: fileUrl,
+                action_id: "download_pdf"
+            }
+        },
+        {
+            type: "context",
+            elements: [
+                {
+                    type: "mrkdwn",
+                    text: `*เซลล์:* ${request.salesName}`
+                }
+            ]
+        }
+    ];
+
+    try {
+        await fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ blocks })
+        });
+    } catch (error) {
+        console.error("Failed to send Slack file notification:", error);
+    }
+}

@@ -14,7 +14,7 @@ export async function POST(
         const oldRequest = allRequests.find(r => r.id === id);
 
         const updated = await updateRowByValue(REQUESTS_SHEET, "id", id, {
-            status: "รับเรื่องแล้ว",
+            status: "ไม่อนุมัติ",
             updatedAt: new Date().toISOString(),
         });
 
@@ -28,7 +28,7 @@ export async function POST(
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        console.error("POST /api/requests/:id/ack error:", error);
+        console.error("POST /api/requests/:id/reject error:", error);
         return NextResponse.json({ message: error.message }, { status: 500 });
     }
 }

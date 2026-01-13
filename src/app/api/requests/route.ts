@@ -21,9 +21,9 @@ export async function GET(req: Request) {
         let result = requests.map(r => {
             let items = [];
             try {
-                // Priority: Use itemsRaw (detailed JSON) if available, fallback to items
-                const rawData = r.itemsRaw || r.items;
-                items = typeof rawData === 'string' && rawData.trim().startsWith('[')
+                // Priority: Use itemsJson (new detailed JSON) then itemsRaw (old detailed JSON) fallback to items
+                const rawData = r.itemsJson || r.itemsRaw || r.items;
+                items = typeof rawData === 'string' && (rawData.trim().startsWith('[') || rawData.trim().startsWith('{'))
                     ? JSON.parse(rawData)
                     : (r.items || []);
             } catch (e) {
@@ -89,8 +89,16 @@ export async function POST(req: Request) {
             salesName,
             // Display only names in 'items' column for Google Sheets readability
             items: items.map((i: any) => i.name).join(", "),
-            // Store full data in 'itemsRaw' for system logic
-            itemsRaw: JSON.stringify(items),
+            // Display only Warranty & Conditions in 'itemsRaw' as requested
+            itemsRaw: items.map((i: any) => {
+                let s = `${i.name}:`;
+                if (i.warrantyPeriod) s += ` ประกัน ${i.warrantyPeriod}`;
+                if (i.warrantyConditions) s += ` (${i.warrantyConditions})`;
+                if (!i.warrantyPeriod && !i.warrantyConditions) s += " ไม่มีประกัน";
+                return s;
+            }).join(" | "),
+            // Store full data in 'itemsJson' for system logic
+            itemsJson: JSON.stringify(items),
             paymentTerm,
             subtotal: parseFloat(subtotal),
             vatAmount: parseFloat(vatAmount),

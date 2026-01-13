@@ -40,8 +40,8 @@ export default function DashboardPage() {
             const total = requests.length;
             const pending = requests.filter((r: any) => r.status === "รออนุมัติ").length;
             const checking = requests.filter((r: any) => r.status === "รอหลังบ้านตรวจสอบ").length;
-            const quotation = requests.filter((r: any) => r.status === "ออกใบเสนอราคา").length;
-            const invoiced = requests.filter((r: any) => r.status === "เปิดบิลแล้ว").length;
+            const quotation = requests.filter((r: any) => r.status === "เปิดใบเสนอราคา").length;
+            const invoiced = requests.filter((r: any) => r.status === "เปิดบิล").length;
             const rejected = requests.filter((r: any) => r.status === "ไม่อนุมัติ" || r.status === "ถูกปฏิเสธ").length;
             const totalAmount = requests.reduce((sum: number, r: any) => sum + parseFloat(r.totalAmount || 0), 0);
 
@@ -138,7 +138,7 @@ export default function DashboardPage() {
                                 <div key={idx} className="flex items-center justify-between p-4 bg-white dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 hover:shadow-md transition-all">
                                     <div className="flex items-center gap-4">
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${req.status === "รออนุมัติ" ? "bg-amber-100 text-amber-600" :
-                                            req.status === "เปิดบิลแล้ว" ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"
+                                            req.status === "เปิดบิล" ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"
                                             }`}>
                                             {req.status === "รออนุมัติ" ? <Clock size={20} /> : <FileText size={20} />}
                                         </div>
@@ -154,7 +154,7 @@ export default function DashboardPage() {
                                     <div className="text-right">
                                         <p className="font-bold text-slate-900 dark:text-white">฿{parseFloat(req.totalAmount).toLocaleString()}</p>
                                         <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${req.status === "รออนุมัติ" ? "bg-amber-100 text-amber-700" :
-                                            req.status === "เปิดบิลแล้ว" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                                            req.status === "เปิดบิล" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
                                             }`}>
                                             {req.status}
                                         </span>
@@ -168,8 +168,8 @@ export default function DashboardPage() {
                     <div className="glass-card p-6">
                         <h2 className="text-lg font-bold mb-6">สัดส่วนสถานะงาน</h2>
                         <div className="space-y-6">
-                            <StatusProgress label="เปิดบิลแล้ว" count={stats?.invoiced} total={stats?.total} color="bg-green-500" />
-                            <StatusProgress label="ออกใบเสนอราคา" count={stats?.quotation} total={stats?.total} color="bg-indigo-500" />
+                            <StatusProgress label="เปิดบิล" count={stats?.invoiced} total={stats?.total} color="bg-green-500" />
+                            <StatusProgress label="เปิดใบเสนอราคา" count={stats?.quotation} total={stats?.total} color="bg-indigo-500" />
                             <StatusProgress label="รออนุมัติ (Slack)" count={stats?.pending} total={stats?.total} color="bg-amber-500" />
                             <StatusProgress label="รอตรวจสอบ" count={stats?.checking} total={stats?.total} color="bg-blue-500" />
                             <StatusProgress label="ไม่อนุมัติ / ถูกปฏิเสธ" count={stats?.rejected} total={stats?.total} color="bg-red-500" />

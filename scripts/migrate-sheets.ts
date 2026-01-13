@@ -42,6 +42,7 @@ const SHEETS_CONFIG = [
             'salesName',
             'items',
             'itemsRaw',
+            'itemsJson',
             'paymentTerm',
             'subtotal',
             'vatAmount',
@@ -49,13 +50,14 @@ const SHEETS_CONFIG = [
             'requestType',
             'note',
             'status',
+            'quotationFile',
             'createdAt',
             'updatedAt'
         ]
     },
     {
         name: INVOICES_SHEET,
-        headers: ['id', 'quotationRequestId', 'invoiceNo', 'invoiceDate', 'vatAmount', 'createdAt', 'updatedAt']
+        headers: ['id', 'quotationRequestId', 'invoiceNo', 'invoiceDate', 'deliveryDate', 'vatAmount', 'createdAt', 'updatedAt']
     }
 ];
 

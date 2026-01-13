@@ -64,19 +64,21 @@ export interface QuotationRequest {
     customerAddress?: string;
     salesName: string;
     items: any; // Can be string in sheet, but object in app
-    itemsRaw?: string; // Hidden JSON data for system
+    itemsRaw?: string; // Column for warranty display in Sheet
+    itemsJson?: string; // Hidden JSON data for system
     paymentTerm: 'เงินสด' | 'เครดิต 15 วัน' | 'เครดิต 30 วัน' | 'เครดิต 60 วัน';
     subtotal: number;
     vatAmount: number;
     totalAmount: number;
     requestType: 'ใบเสนอราคา' | 'ใบเสร็จ';
     note?: string;
-    status: 'รออนุมัติ' | 'รอหลังบ้านตรวจสอบ' | 'รับเรื่องแล้ว' | 'ออกใบเสนอราคา' | 'เปิดบิลแล้ว' | 'ไม่อนุมัติ' | 'ถูกปฏิเสธ';
+    status: 'รออนุมัติ' | 'รอหลังบ้านตรวจสอบ' | 'รับเรื่องแล้ว' | 'เปิดใบเสนอราคา' | 'เปิดบิล' | 'ไม่อนุมัติ' | 'ถูกปฏิเสธ';
     createdAt: string;
     updatedAt: string;
     // Joined data (not in sheet)
     invoiceNo?: string;
     invoiceDate?: string;
+    quotationFile?: string;
 }
 
 export interface InvoiceRecord {
@@ -84,6 +86,7 @@ export interface InvoiceRecord {
     quotationRequestId: string;
     invoiceNo: string;
     invoiceDate: string;
+    deliveryDate?: string;
     vatAmount?: number;
     createdAt: string;
     updatedAt: string;
